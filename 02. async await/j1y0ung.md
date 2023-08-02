@@ -10,7 +10,7 @@ ES8에 해당하는 문법으로 Promise를 쉽게 사용 할 수 있게 해준�
 
 ## async/await 등장 이유
 
-async await가 생기기 이전에는 JavaScript의 비동기 처리 방식이 콜백 지욕을 야기 시켰ㄷ.ㅏ 코드가 복잡해지고 가독성이 떨어져 Promise가 등장했지만, Promise로도 복잡한 비동기 처리를 해결하기 어려워 asyc/awiat가 등장했다.
+async await가 생기기 이전에는 JavaScript의 비동기 처리 방식이 콜백 지옥을 야기 시켰다. 코드가 복잡해지고 가독성이 떨어져 Promise가 등장했지만, Promise로도 복잡한 비동기 처리를 해결하기 어려워 async/await가 등장했다.
 
 ## 예외처리
 
@@ -21,4 +21,4 @@ try catch를 통해 예외러치를 할 수 있다. ( Promise에서 에러처리
 ES2022 전에는 await는 async와 같이 사용해야했는데 업데이트 되며 await 단독 사용이 가능해졌다.
 
 - 모듈 최상위 수준에서 await를 사용이 가능해졌다.
-- top-level await는 모듈에서만 사용 가능하며 전역공간에서느 사용할 수 없다.
+- top-level await는 모듈에서만 사용 가능하며 전역공간에서는 사용할 수 없다.
