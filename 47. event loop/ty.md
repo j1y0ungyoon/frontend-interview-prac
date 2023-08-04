@@ -10,7 +10,7 @@
 
 **이벤트 루프는 브라우저 내부의 Call Stack, Callback Queue, Web APIs 등의 요소들을 모니터링하면서 비동기적으로 실행되는 작업들을 관리하고, 이를 순서대로 처리하여 프로그램의 실행 흐름을 제어한다.(브라우저의 동작 타이밍을 제어하는 관리자)**
 
-<img src="![Alt text](image.png">
+<img src="https://miro.medium.com/v2/resize:fit:720/0*6T6KIVRkN9nWb3QU.gif">
 
 ### 1. js Engine
 
