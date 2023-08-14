@@ -181,7 +181,7 @@ getStaticProps의 반환값으로 revalidate값을 주면 해당 시간(예시�
 - https://ajdkfl6445.gitbook.io/study/web/csr-vs-ssr-vs-ssg
 - https://www.flavienbonvin.com/data-building-strategy-for-nextjs-app/
 
-- **Next.js에서 CSR, SSR, SSG, IRS 적용하기**
+**Next.js에서 CSR, SSR, SSG, IRS 적용하기**
 
 - https://www.philly.im/blog/grokking-data-fetching-in-nextjs
 - https://theodorusclarence.com/blog/nextjs-fetch-usecase
