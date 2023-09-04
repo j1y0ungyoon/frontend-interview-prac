@@ -113,3 +113,9 @@ JSX에서 컴포넌트에 전달되는 속성을 설정할 때 변수(ex: classN
 위 코드에서 className와 dataValue는 속성 이름 나타내는 변수이고 이는 카멜케이스로 작성되어있음.
 
 이렇게 변수를 카멜 케이스로 작성하여 JSX가 자바스크립트로 변환될 때 변수 이름에 예약어(ex: class)나 특수 문자(ex: 하이픈(-))가 포함되지 않도록 함. 이렇게 하면 코드의 가독성도 향상되고, 자바스크립트 변수 네이밍 규칙과도 호환성을 유지할 수 있음
+
+**참고**
+
+- https://react-ko.dev/learn/writing-markup-with-jsx
+- http://tcpschool.com/react/react_jsx_intro
+- https://thebook.io/080203/0041/
