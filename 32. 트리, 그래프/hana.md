@@ -36,7 +36,7 @@
 - 포탈사이트의 검색 엔진
 - SNS 팔로우
 - 네비게이션 길 찾기 등
-  [여기](https://hyojin96.tistory.com/entry/%EA%B7%B8%EB%9E%98%ED%94%84%EC%99%80-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90) 참고하기
+  [여기](https://hyojin96.tistory.com/entry/%EA%B7%B8%EB%9E%98%ED%94%84%EC%99%80-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90) 참조하기
 
 ## 트리
 
@@ -70,4 +70,12 @@
 ### 실사용 예시
 
 - 컴퓨터 디렉토리 구조, 토너먼트 대진표, 가계도, 조직도 등
-  [여기](https://hyojin96.tistory.com/entry/%EA%B7%B8%EB%9E%98%ED%94%84%EC%99%80-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90) 참고하기
+  [여기](https://hyojin96.tistory.com/entry/%EA%B7%B8%EB%9E%98%ED%94%84%EC%99%80-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90) 참조하기
+
+**참고**
+
+- https://tobegood.tistory.com/entry/day29
+- https://hyojin96.tistory.com/entry/%EA%B7%B8%EB%9E%98%ED%94%84%EC%99%80-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90
+- https://bigsong.tistory.com/33
+- https://gusrb3164.github.io/computer-science/2021/04/16/graph,tree/
+- [책] 기초부터 시작하는 코딩 생활
