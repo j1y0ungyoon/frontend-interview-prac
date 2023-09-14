@@ -138,3 +138,8 @@ console.log(`After Function: ${myObject.key}`); // 원본 객체의 값 출력
 함수 내부에서 obj를 새로운 객체로 대체함. 그러나 함수 외부에서 myObject의 값을 출력하면 여전히 원본 객체 값('original object')가 출력됨
 
 이것은 함수 내부에서 obj가 새로운 객체를 가리키더라도 함수 외부에서 myObj는 여전히 이전 객체를 참조하고 있기 때문임
+
+**참고**
+
+- https://poiemaweb.com/js-object
+- https://poiemaweb.com/js-immutability
