@@ -279,3 +279,50 @@ export default forwardRef(
 - https://react-ko.dev/learn/referencing-values-with-refs#differences-between-refs-and-state
 - https://react-ko.dev/reference/react/useRef
 - https://www.w3schools.com/react/react_useref.asp
+
+---
+
+## 연관 질문
+
+### useState에 대해서 설명해주세요
+
+데이터를 저장하고 관리할 수 있는 state를 가지고 setState를 통해 state의 상태를 관리하는 상태관리 훅임
+setState는 기존의 state를 복사해 새롭게 state를 갱신하기 때문에 객체의 불변성을 지킬 수 있음. 이를 통해 발생할 수 있는 오류들을 미리 방지할 수 있음.
+예를 들면 useState를 통해 불변성을 유지하지 않고 임의로 상태를 변경하면 리액트가 상태 변경을 알아채지 못해 컴포넌트가 불필요하게 재렌더링되거나 혹은 이전 상태와 현태 상태를 리액트가 비교하지 못해 변경된 상태를 UI에 반영하지 못함.
+그리고 setState를 통해 state에 변화가 생기면 알아서 리렌더링을 해주기 때문에 훨신 쉽게 상태관리를 할 수 있음
+
+### useEffect에 대해서 설명해주세요
+
+useEffect는 componentDidMount, componentDidUpdate, componentWillUnmount룰 하나로 통합한 리액트 훅 중에 하나이며, 컴포넌트 렌더링과 관련된 side effect 를 처리하고(데이터 가져오기, 수동 DOM 조작 등), 의존성 배열을 통해서 필요한 상황에서만 실행되도록 관리할 수 있는 훅임
+
+useEffect 훅을 사용하면 리액트 컴포넌트가 화면에 렌더링 된 후 비동기 작업을 처리함.
+
+```
+useEffect(() => {
+  console.log('componentDidMount')
+
+  return () => {
+    // cleanUp
+    console.log('componentWillUnmount')
+  }
+}, [array dependencies])
+// deps에 포함된 상태나 프롭스가 변경될 때마다 다시 렌더링 됨(componentDidMount와 componentDidUpdate를 합친 것처럼 동작)
+// deps에 빈배열을 넣은 경우 componentDidMount처럼 동작함. 즉, 마운트되고 첫 렌더링이 끝난 직후에만 첫번째 인자인 함수가 실행됨
+```
+
+useEffect는 사이드 이펙트를 처리하면서 컴포넌트 성능이나 렌더링에는 영향을 끼치지 않도록 도와주는 역할을 하며, 이는 비동기 작업과 컴포넌트 렌더링을 분리하고 최적화를 가능하게 함
+
+### 사이드 이펙트(부수효과, side effect)란 무엇인가요?
+
+리액트 컴포넌트는 함수로 정의되며, 대부분의 리액트 함수는 순수함수처럼 동작함.  
+즉, 입력(props)을 받으면 예측 가능한 jsx를 return하는 것을 의미함
+
+순수함수는 주어진 입력에 대해 항상 동일한 결과를 리턴하고 외부 상태나 변수에 영향을 주지 않음. 하지만 사이드 이펙트를 가진 함수는 무엇인가를 하기 위해 리액트 컴폰넌트 외부와 함께 수행되기 때문에 순수함수와는 달리 외부 상태를 변경하거나, 외부와 상호작용해 수행한 결과가 어떤지 예측할 수 없음
+
+사이드 이펙트는 다음과 같은 것들이 있음
+
+- 백엔드 서버로 api 데이터 요펑
+- 브라우저 api와 상호작용(document, window 직접 사용 등 DOM 조작에 관련됨)
+- setTimeout, setInterval 등 타이머 관련 함수
+
+### useMemo, useCallback, React.memo 각각의 차이점과 어떨 때 사용하는지 설명해주세요
