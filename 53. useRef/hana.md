@@ -327,4 +327,404 @@ useEffect는 사이드 이펙트를 처리하면서 컴포넌트 성능이나 �
 
 ### useMemo, useCallback, React.memo 각각의 차이점과 어떨 때 사용하는지 설명해주세요
 
-// 내일 업뎃 예정
+useMemo(값 캐싱), useCallback(함수 캐싱), memo(React.memo, 컴포넌트 캐싱)의 훅들은 최적화(optimization)를 위해 사용함
+최적화란 불필요한 렌더링을 줄여 비용 발생을 줄이는 것을 말함
+
+그러면 어떨 때 리액트에서는 렌더링이 발생할까?
+
+- 컴포넌트의 state가 바뀌었을 때
+- 컴포넌트에서 내려 받은 props가 변경되었을 때
+- 부모 컴포넌트가 리렌더링된 경우 자식 컴포넌트는 모두 리렌더링 됨
+
+#### useMemo
+
+동일한 함수를 계속 호출해야 한다면 필요없는 렌더링을 한다고 볼 수 있음. 그래서 맨 처음 해당 값을 리턴할 때 그 값을 메모리에 저장함. 이렇게 하면 필요할 때마다 함수를 다시 호출해서 계산하는 것이 아니라 이미 저장한 값(함수가 리턴하는 값이나 아니면 그냥 값 자체)을 꺼내와서 사용할 수 있음. 이런 걸 보통 캐싱이라고 함
+
+```
+// as-is
+const value = 반환할_함수();
+
+// to-be
+const value = useMemo(()=> {
+	return 반환할_함수()
+}, [dependencyArray]);
+```
+
+dependencyArray의 값이 변경될 때만 반환할\_함수()가 호출됨
+그 외의 경우에는 메모이제이션 한 값을 가져옴
+
+##### 예시
+
+HeavyComponent 안에서는 const value = heavyWork() 를 통해서 value값을 세팅해주고 있음. 만약 heavyWork가 엄청나게 무거운 작업이라면 다른 state가 바뀔 때 마다 계속해서 호출이 됨. 하지만 useMemo()로 감싸주게 되면 그럴 걱정이 없음
+
+```
+// App.js
+
+import "./App.css";
+import HeavyComponent from "./components/HeavyComponent";
+
+function App() {
+  const navStyleObj = {
+    backgroundColor: "yellow",
+    marginBottom: "30px",
+  };
+
+  const footerStyleObj = {
+    backgroundColor: "green",
+    marginTop: "30px",
+  };
+
+  return (
+    <>
+      <nav style={navStyleObj}>네비게이션 바</nav>
+      <HeavyComponent />
+      <footer style={footerStyleObj}>푸터 영역이에요</footer>
+    </>
+  );
+}
+
+export default App;
+
+// HeavyComponent.jsx
+
+import React, { useState, useMemo } from "react";
+
+function HeavyButton() {
+  const [count, setCount] = useState(0);
+
+  const heavyWork = () => {
+    for (let i = 0; i < 1000000000; i++) {}
+    return 100;
+  };
+
+	// CASE 1 : useMemo를 사용하지 않았을 때
+  const value = heavyWork();
+
+	// CASE 2 : useMemo를 사용했을 때
+  // const value = useMemo(() => heavyWork(), []);
+
+  return (
+    <>
+      <p>나는 {value}을 가져오는 엄청 무거운 작업을 하는 컴포넌트임</p>
+      <button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      >
+        누르면 아래 count가 올라가요!
+      </button>
+      <br />
+      {count}
+    </>
+  );
+}
+
+export default HeavyButton;
+
+```
+
+useMemo를 사용하지 않는다면 count state가 변경될 때마다 컴포넌트가 리렌더링되고, heavyWork 함수도 계속 새롭게 만들어져 계속 새로 값을 리턴해야하기 때문에 count가 느리게 올라감
+하지만 useMemo를 사용하면 heavyWork에서 리턴한 값을 메모리에 저장하고 있기 때문에(캐싱) count state가 바뀌어 컴포넌트가 리렌더링되어도 캐싱되어있는 값만 가져와서 쓰기 때문에 빠르게 count가 바뀜
+
+##### useMemo의 dependency array
+
+```
+import React, { useEffect, useState } from "react";
+
+function ObjectComponent() {
+  const [isAlive, setIsAlive] = useState(true);
+  const [uselessCount, setUselessCount] = useState(0);
+
+  const me = {
+    name: "Ted Chang",
+    age: 21,
+    isAlive: isAlive ? "생존" : "사망",
+  };
+
+  useEffect(() => {
+    console.log("생존여부가 바뀔 때만 호출해주세요!");
+  }, [me]);
+
+  return (
+    <>
+      <div>
+        내 이름은 {me.name}이구, 나이는 {me.age}야!
+      </div>
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            setIsAlive(!isAlive);
+          }}
+        >
+          누르면 살았다가 죽었다가 해요
+        </button>
+        <br />
+        생존여부 : {me.isAlive}
+      </div>
+      <hr />
+      필요없는 숫자 영역이에요!
+      <br />
+      {uselessCount}
+      <br />
+      <button
+        onClick={() => {
+          setUselessCount(uselessCount + 1);
+        }}
+      >
+        누르면 숫자가 올라가요
+      </button>
+    </>
+  );
+}
+
+export default ObjectComponent;
+```
+
+위의 예시에서는 `누르면 숫자가 올라가요` 버튼을 누르면 useEffect에 있는 console.log가 계속 찍힘(즉, 계속 리렌더링 되고있음). useEffect의 디펜던시 어레이에 me를 설정해놓았음에도 계속 리렌더링되는 이유는 `누르면 숫자가 올라가요` 버튼을 누르면 uselessCount state가 변경되면서 해당 컴포넌트가 리렌더링되고, 이때 me라는 객체가 새롭게 생성되면서 주소값이 달라지기 때문에 리액트는 me 라는 객체의 상태가 바뀌었다는 것으로 보기 때문임.
+
+이를 해결하기 위해서 useMemo를 활용할 수 있음
+
+```
+const me = useMemo(() => {
+  return {
+    name: "Ted Chang",
+    age: 21,
+    isAlive: isAlive ? "생존" : "사망",
+  };
+}, [isAlive]);
+```
+
+이렇게 useMemo를 사용하면 me라는 객체는 isAlive라는 값이 변경되기 전까지 항상 같은 주소값을 바라보고 있고, uselessCount가 변경(증가하거나 감소)되어 컴포넌트가 리렌더링되어도 영향을 안 받게 됨
+
+하지만 useMemo를 남발하면 메모리를 너무 많이 확보해야하기 때문에 오히려 성능이 악화될 수 있음 -> 필요할 때만 사용하자
+
+#### useCallback
+
+인자로 들어오는 함수 자체를 memoization함
+
+##### 예시
+
+```
+// App.js
+
+// count를 초기화해주는 함수
+  const initCount = () => {
+    setCount(0);
+  };
+
+  return (
+    <>
+      <h3>카운트 예제입니다!</h3>
+      <p>현재 카운트 : {count}</p>
+      <button onClick={onPlusButtonClickHandler}>+</button>
+      <button onClick={onMinusButtonClickHandler}>-</button>
+      <div style={boxesStyle}>
+        <Box1 initCount={initCount} />
+        <Box2 />
+        <Box3 />
+      </div>
+    </>
+  );
+
+// Box1.js
+
+function Box1({ initCount }) {
+  console.log("Box1이 렌더링되었습니다.");
+
+  const onInitButtonClickHandler = () => {
+    initCount();
+  };
+
+  return (
+    <div style={boxStyle}>
+      <button onClick={onInitButtonClickHandler}>초기화</button>
+    </div>
+  );
+}
+
+export default React.memo(Box1)
+```
+
+예시에서 +,-버튼과 박스1에 있는 초기화 버튼을 누를 때 모두 App컴포넌트와 Box1 컴포넌트가 리렌더링됨. 그런데 Box1에 React.memo를 했는데 왜 리렌더링이 된걸까? -> App.js에서 만든 initCount 함수를 부모 컴포넌트인 App에서 생성해 자식 컴포넌트인 Box1에 props로 전달하고 있기 때문임. React.memo는 컴포넌트의 props가 변경되지 않았을 때만 컴포넌트의 리렌더링을 방지함. 하지만 initCount 함수는 App 컴포넌트에서 생성된 함수이고 App 컴포넌트가 리렌더링될 때마다 새로운 initCount 함수가 생성(주소값이 달라짐)되므로 하위 컴포넌트인 Box1에서 props가 변경되었다고 간주함
+
+따라서 Box1의 리렌더링을 방지하려면 initCount 함수를 App 컴포넌트 내에서 다시 생성하지 않고 한번 생성된 함수를 재사용해야함. 이때 useCallback 함수를 사용할 수 있음
+
+```
+// App.js
+
+// count를 초기화해주는 함수
+  const initCount = useCallback(() => {
+    setCount(0);
+  }, [])
+
+  return (
+    <>
+      <h3>카운트 예제입니다!</h3>
+      <p>현재 카운트 : {count}</p>
+      <button onClick={onPlusButtonClickHandler}>+</button>
+      <button onClick={onMinusButtonClickHandler}>-</button>
+      <div style={boxesStyle}>
+        <Box1 initCount={initCount} />
+        <Box2 />
+        <Box3 />
+      </div>
+    </>
+  );
+
+```
+
+initCount 함수에 useCallback을 사용하면 함수 자체를 메모리에 메모이제이션하고 필요할 때마다 가져다 쓰기 때문에 initCount 함수가 새로 생성되지 않고, 재사용할 수 있음. 또한 하위 컴포넌트에 React.memo를 사용해 리렌더링을 방지할 수 있음
+
+##### useCallback의 dependency array
+
+initCount에 아래와 같이 콘솔을 추가함
+
+```
+// count를 초기화해주는 함수
+const initCount = useCallback(() => {
+  console.log(`[COUNT 변경] ${count}에서 0으로 변경되었습니다.`);
+  setCount(0);
+}, []);
+```
+
+만약 카운트를 10고 초기화 버튼을 누르면 콘솔에는 10에서 0으로라는 문자열이 찍혀야함
+하지만 콘솔을 찍어보면 0에서 0으로 변경되었다고 나옴
+왜냐하면 useCallback의 count가 0일때의 시점을 기준으로 메모리에 함수를 저장했기 때문임.
+따라서 initCount 함수의 디펜던시 어레이에 count를 넣으면 count가 변경될 때마다 새롭게 함수를 할당함
+
+```
+// count를 초기화해주는 함수
+const initCount = useCallback(() => {
+  console.log(`[COUNT 변경] ${count}에서 0으로 변경되었습니다.`);
+  setCount(0);
+}, [count]);
+```
+
+이렇게 하면 count가 변경될 때마다 새롭게 함수를 할당하고 콘솔에는 현재값에서 0으로 변경되었다는 문구가 잘 뜸(의도대로 잘 동작함)
+
+#### memo(React.memo)
+
+부모 컴포넌트가 리렌더링된 경우 자식 컴포넌트에서는 바뀐 것이 없는데 굳이 리렌더링 됨
+React.memo를 사용해 컴포넌트를 메모리에 저장해두고 필요할 때 갖다씀. 이렇개 하면 부모 컴포넌트의 state 변경으로 인해 props에 변경이 일어나지 않는 이상 컴포넌트는 리렌더링이 되지 않음(component memorization)
+
+##### 예시
+
+```
+// ParentApp.js
+import React, { useState } from "react";
+import ChildBox1 from "./components/ChildBox1";
+import ChildBox2 from "./components/ChildBox2";
+import ChildBox3 from "./components/ChildBox3";
+
+const boxesStyle = {
+  display: "flex",
+  marginTop: "10px",
+};
+
+function ParentApp() {
+  console.log("ParentApp 컴포넌트 렌더링");
+
+  const [count, setCount] = useState(0);
+
+  const onPlusButtonClickHandler = () => {
+    setCount(count + 1);
+  };
+
+  const onMinusButtonClickHandler = () => {
+    setCount(count - 1);
+  };
+
+  return (
+    <>
+      <h3>React.memo 예제</h3>
+      <p>현재 카운트 : {count}</p>
+      <button onClick={onPlusButtonClickHandler}>+</button>
+      <button onClick={onMinusButtonClickHandler}>-</button>
+      <div style={boxesStyle}>
+        <ChildBox1 />
+        <ChildBox2 />
+        <ChildBox3 />
+      </div>
+    </>
+  );
+}
+
+export default App;
+
+
+// ChildBox1.js
+
+import React from "react";
+
+const boxStyle = {
+  width: "100px",
+  height: "100px",
+  backgroundColor: "#91c49f",
+  color: "white",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+function ChildBox1() {
+  console.log("ChildBox1 렌더링");
+  return <div style={boxStyle}>Box1</div>;
+}
+
+export default ChildBox1;
+
+// ChildBox2.js
+
+import React from "react";
+
+const boxStyle = {
+  width: "100px",
+  height: "100px",
+  backgroundColor: "#91c49f",
+  color: "white",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+function ChildBox2() {
+  console.log("ChildBox2 렌더링");
+  return <div style={boxStyle}>Box1</div>;
+}
+
+export default ChildBox2;
+
+
+// ChildBox3.js
+
+import React from "react";
+
+const boxStyle = {
+  width: "100px",
+  height: "100px",
+  backgroundColor: "#91c49f",
+  color: "white",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+function ChildBox3() {
+  console.log("ChildBox3 렌더링");
+  return <div style={boxStyle}>Box1</div>;
+}
+
+export default ChildBox3;
+```
+
+위의 예시를 실행하고 버튼을 눌러보면 ParentApp가 리렌더링되면서 하위 컴포넌트인 ChildBox1,2,3 컴포넌트가 리렌더링되고 있음.
+하위 컴포넌트는 바뀌지 않았음에도 불필요한 렌더링이 발생함 -> React.memo를 사용해 해결
+
+```
+export default React.memo(ChildBox1);
+export default React.memo(ChildBox2);
+export default React.memo(ChildBox3);
+```
+
+이렇게 하위 컴포넌트에 적용해주면 ParentApp 컴포넌트의 state가 변경이 되어도 자식 컴포넌트들은 리렌더링이 되지 않음.
