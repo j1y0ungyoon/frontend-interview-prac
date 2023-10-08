@@ -34,6 +34,31 @@
 
 ### entry
 
+웹팩은 번들링 과정에서 dependency graph를 그림. 특정 지점에서부처 출발해 어플리케이션에 필요한 모든 모듈을 포함하는 그래프를 재귀적으로 완성해감. 한 파일이 다른 파일을 필요로 하면 이를 dependency(의존성)이 있다고 해석하는데, 그래프를 모두 그리고 하념 닝 모든 모듈을 하나의 번들로 묶어서 브라우저에 로드될 준비를 마침. 이때 웹팩이 어디를 출발점으로 잡아 그래프를 그려나가야 하는지 알려주어야함. config 파일에서 entry 속성을 설정해서 웹팩이 어떤 모듈로부터 시작해 디펜던시 그래프를 그려나갈지 명시해줄 수 있음. entry 속성에서 기본값으로 되어있는 값 말고도 원하는 대로 entry point를 지정할 수 도 있음(여러 개도 지정가능함)
+
+```
+// webpack.config.js
+
+
+module.exports = {
+  mode: process.env.mode,
+  entry : './App.js',
+
+}
+```
+
+엔트리 포인트를 분리하는 경우는 SPA 어플리케이션이 아닌 특정 페이지로 진입했을 때 서버에서 해당 정보를 내려주는 형태의 MPA 어플리케이션에 적합함
+
+```
+// webpack.config.js
+
+
+  entry : {
+    login: './src/Login.js',
+    main : './src/MainView.js'
+}
+```
+
 ### output
 
 웹팩이 번들링한 결과물을 어디에 생성할 건지와 어떤 이름으로 만들건지 정의하는 요소를 말함
@@ -44,7 +69,7 @@
 // root 디렉토리에 미리 dist라는 폴더를 만들어두고 bundle.js라는 이름으로 output 파일이름을 지정함
 module.exports = {
 
-  entry : './App,js',
+  entry : './App.js',
   output : {
     path: './dist',
     filename : 'bundle.js'
@@ -55,7 +80,7 @@ module.exports = {
 
 ### loader
 
-기볹거으로 웹팩은 자바스크립트 및 JSON 파일만 이해함. loader를 사용하면 웹팩이 다른 유형의 파일을 처리하고 이를 어플리케이션에서 사용하고, depencencies에 추가할 수 있는 유효한 모듈로 변환할 수 있음
+기볹거으로 웹팩은 자바스크립트 및 JSON 파일만 이해함. loader를 사용하면 웹팩이 다른 유형의 파일을 처리하고 이를 어플리케이션에서 사용하고, depencency graph에 추가할 수 있는 유효한 모듈로 변환할 수 있음
 
 즉, 웹팩이 이해할 수 있도록 해주는 것이 loader의 역할임
 또한 ES6의 형식으로 작성된 자바스크립트를 ES5로 바꾸어 컴파일 시켜주는 babel이라는 loader도 있음
