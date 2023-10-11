@@ -33,12 +33,19 @@ useRef는 두 가지의 경우에 사용됨
 useState는 상태값을 관리하기 위해 사용되고, 상태가 업데이트될 때마다 컴포넌트가 리렌더링되며, UI에 반영이 됨
 반면 useRef는 컴포넌트의 생애주기동안 계속 유지되며, 값이 변경되어도 컴포넌트가 리렌더링되지 않음.
 
-| ref                                                               | state                                                                                 |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---- |
-| useRef(initialValue)는 { current : initialValue} 반환             | useState(initialValue)는 state의 변수와 state 설정자함수([state, setState])           | 반환 |
-| 변경 시 리렌더링X                                                 | 변경 시 리렌더링O                                                                     |
-| 렌더링 프로레스 외부에서 current 값을 수정하고 업데이트할 수 있음 | state setting 함수를 사용해 state 변수를 수정해 리렌더링 개디열에 추가해야함          |
-| 렌더링 중에는 current 값을 읽거나 쓰면 X                          | 언제든지 state를 읽을 수 있음. 각 렌러딩에는 변경되지 않는 자체 state snapshot이 있음 |
+### ref
+
+- useRef(initialValue)는 { current : initialValue} 반환
+- 변경 시 리렌더링X
+- 렌더링 프로레스 외부에서 current 값을 수정하고 업데이트할 수 있음
+- 렌더링 중에는 current 값을 읽거나 쓰면 X
+
+### state
+
+- useState(initialValue)는 state의 변수와 state 설정자함수([state, setState]) 반환
+- 변경 시 리렌더링O
+- state setting 함수를 사용해 state 변수를 수정해 리렌더링 대기열에 추가해야함
+- 언제든지 state를 읽을 수 있음. 각 렌더링에는 변경되지 않는 자체 state snapshot이 있음
 
 ```
 import { useRef, useState } from 'react;
