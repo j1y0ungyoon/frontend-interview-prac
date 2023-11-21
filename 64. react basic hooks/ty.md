@@ -56,3 +56,5 @@ function App() {
 }
 
 ```
+
+## 2. useEffect
