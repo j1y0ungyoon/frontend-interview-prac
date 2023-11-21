@@ -43,3 +43,30 @@ Callback Queue는 비동기 함수들을 보관하는 장소로 Event Loop에서
 Event Loop는 Call Stack과 Callback Queue를 상태를 계속 감시하며 Call Stack에 함수들이 존재하지 않는다면 Callback Queue에 있는 비동기 함수들을 Call Stack에 밀어 넣게 됩니다. 그 후 Call Stack에서 비동기 함수를 실행시키게 된다.
 
 https://blog.toycrane.xyz/%EC%A7%84%EC%A7%9C-%EC%89%BD%EA%B2%8C-%EC%95%8C%EC%95%84%EB%B3%B4%EB%8A%94-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC-c7fbdc44cc97
+
+# 2023.11.21 추가
+
+자바스크립트의 비동기 동작을 이해하는데 핵심적인 개념.
+자바스크립트는 싱글스레드 언어 이다. 한 번에 하나의 작업만 처리 할수 있다. 그러나 Event Loop를 사용하므로써 비동기 처리를 가능하게 한다. (서버에 요청을 보내는 동안 다른 스크립트를 실행할 수 있다.)
+
+## 작동방식
+
+1. call Stack : 자바스크립트코드가 실행될 때 함수 호출은 call stack에 추가된다. 함수가 반환되면 call stack에서 제거된다.
+2. web APIs: 브라우저에서 제공하는 API(setTimeout, XMLHttpRequest)는 call stack에서 직접 실행되지 않고 web APIs에서 처리 완료되면 task Queue로 보내진다.
+3. task Queue : callback함수를 저장한다. call stack이 비어있을 때 Event loop가 task Queue에서 callback을 call stack으로 이동한다. (1. micro task queue 2. 상황에 따라 animationFrame queue 3. task queue)
+   1. micro task queue : promise...
+   2. task queue : setTimeout...
+   3. animaionFrame queue : animation
+4. Event Loop: call stack이 비어 있을때 Event Loop는 Task Queue에서 대기중인 callback을 call stack으로 이동 시킨다.
+
+```js
+console.log("First");
+
+setTimeout(() => {
+  console.log("Second");
+}, 0);
+
+console.log("Third");
+
+//First Third Second
+```
