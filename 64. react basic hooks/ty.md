@@ -60,16 +60,16 @@ function App() {
 ## 2. useEffect
 
 useEffect는 React의 함수형 컴포넌트에서 sideEffect를 다루기 위한 훅이다.
-`
+
 sideEffect란?
 컴포넌트의 주요 작업(렌더링) 외에 발생하는 작업을 의미한다. 컴포넌트의 렌더링 결과나 상태에 직접적으로 영향을 미치지는 않으나 애플리케이션의 기능을 수행하는데 필수적이다.
 
 1. 데이터 가져오기 : 웹 API로부터 데이터를 가져오는 것은 컴포넌트의 상태나 UI 에 영향을 줄수있다.
 2. 구독 설명 및 해제: 외부 데이터 소스(websoket,firebase)에 대한 구독을 설정하고 해재 하는것
 3. 타이머 설정및 해제: setTimeout이나 setInterval을 사용하여 타이버를 설정하고 해제 하는것
-   `
-   클래스 컴포넌트에서는 componentDiMount, componentDidUpdate, componentWillUnmint를 사용하여 부수효과를 처리하였다
-   함수형 컴포넌트에서는 uesEffect를 사용하여 fetching, 구독설정, 수동 DOM 조작과 같은 작업을 수행할수 있다.
+
+클래스 컴포넌트에서는 componentDiMount, componentDidUpdate, componentWillUnmint를 사용하여 부수효과를 처리하였다
+함수형 컴포넌트에서는 uesEffect를 사용하여 fetching, 구독설정, 수동 DOM 조작과 같은 작업을 수행할수 있다.
 
 ```js
 // 의존성배열이 없는 경우 - 렌더링 될때마다 실행
